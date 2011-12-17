@@ -1,12 +1,20 @@
 %w{git-core gnupg flex bison gperf build-essential
-zip curl zlib1g-dev libc6-dev lib32ncurses5-dev ia32-libs
-x11proto-core-dev libx11-dev lib32readline5-dev 
+zip curl zlib1g-dev libc6-dev lib32ncurses5-dev
+x11proto-core-dev libx11-dev lib32readline5-dev
 libgl1-mesa-dev g++-multilib mingw32 tofrodos python-markdown
 libxml2-utils python-pip wget}.each do |pkg|
-  #chef could not install lib32z-dev
+  #chef could not install lib32z-dev ia32-libs
   package pkg do
     action :install
   end
+end
+
+script "install-lib32z-dev" do
+  interpreter "bash"
+  user "root"
+  code "
+    apt-get install -y lib32z-dev
+  "
 end
 
 script "setup-android-ndk" do
