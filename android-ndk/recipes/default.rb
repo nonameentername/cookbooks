@@ -6,6 +6,7 @@
   package pkg do
     action :install
   end
+end
 
 script "install-lib32z-dev" do
   interpreter "bash"
@@ -13,8 +14,7 @@ script "install-lib32z-dev" do
   code "apt-get install -y lib32z-dev"
 end
 
-
-end
+src_dir = "/home/vagrant/source"
 
 script "setup-android-ndk" do
   interpreter "bash"
@@ -24,6 +24,9 @@ script "setup-android-ndk" do
     wget http://dl.google.com/android/ndk/android-ndk-r7-linux-x86.tar.bz2
     tar jxvf android-ndk-r7-linux-x86.tar.bz2
     mkdir -p /home/vagrant/source
-    mv android-ndk-r7 /home/vagrant/source/android-ndk
+    mv android-ndk-r7 #{src_dir}/android-ndk
   "
+  not_if do
+    File.exists?("#{src_dir}/android-ndk")
+  end
 end
