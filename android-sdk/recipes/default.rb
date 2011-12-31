@@ -15,11 +15,18 @@ script "setup-android-sdk" do
     tar zxvf android-sdk_r16-linux.tgz
     mkdir -p #{src_dir}
     mv android-sdk-linux #{src_dir}/android-sdk
-    #{src_dir}/android-sdk/tools/android update sdk -u
+    #{src_dir}/android-sdk/tools/android update sdk -u -t platform-tool
   "
   not_if do
     File.exists?("#{src_dir}/android-sdk")
   end
+end
+
+execute "add-platform-tools-bash_aliases" do
+  user "vagrant"
+  path = "#{src_dir}/android-sdk/tools:#{src_dir}/android-sdk/platform-tools"
+  command "echo \"export PATH=#{path}:\\$PATH\" >> /home/vagrant/.bash_aliases"
+  not_if "grep platform-tools /home/vagrant/.bash_aliases"
 end
 
 =begin
