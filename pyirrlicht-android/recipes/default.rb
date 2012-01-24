@@ -1,10 +1,10 @@
-src_dir = "/home/vagrant/source"
+src_dir = node[:settings][:src_dir]
 irrlicht_dir = "#{src_dir}/irrlicht-android"
 pyirrlicht_dir = "#{src_dir}/pyirrlicht-android"
 
 script "setup-pyirrlicht-android-repo" do
   interpreter "bash"
-  user "vagrant"
+  user node[:settings][:user]
   cwd src_dir
   code "git clone git://github.com/nonameentername/irrlicht-android.git"
   not_if do
@@ -14,7 +14,7 @@ end
 
 script "setup-pyirrlicht-android-repo" do
   interpreter "bash"
-  user "vagrant"
+  user node[:settings][:user]
   cwd src_dir
   code "git clone git://github.com/nonameentername/pyirrlicht-android.git"
   not_if do
@@ -23,8 +23,8 @@ script "setup-pyirrlicht-android-repo" do
 end
 
 bash "build-pyirrlicht-android" do
-  user "vagrant"
+  user node[:settings][:user]
   cwd pyirrlicht_dir
   code "./build.sh"
-  environment "HOME" => "/home/vagrant"
+  environment "HOME" => "/home/#{node[:settings][:user]}"
 end

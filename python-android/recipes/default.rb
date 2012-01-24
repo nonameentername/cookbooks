@@ -5,12 +5,12 @@
   end
 end
 
-src_dir = "/home/vagrant/source"
+src_dir = node[:settings][:src_dir]
 python_dir = "#{src_dir}/python-android"
 
 script "setup-python-android-repo" do
   interpreter "bash"
-  user "vagrant"
+  user node[:settings][:user]
   cwd src_dir
   code "git clone git://github.com/nonameentername/python-android.git"
   not_if do
@@ -20,7 +20,7 @@ end
 
 script "bootstrap-python-android" do
   interpreter "bash"
-  user "vagrant"
+  user node[:settings][:user]
   cwd python_dir
   code "./bootstrap.sh"
   not_if do
@@ -29,18 +29,18 @@ script "bootstrap-python-android" do
 end
 
 bash "build-python-android" do
-  user "vagrant"
+  user node[:settings][:user]
   cwd python_dir
   code "./build.sh"
-  environment "HOME" => "/home/vagrant"
+  environment "HOME" => "/home/#{node[:settings][:user]}"
   not_if do
     File.exists?("#{python_dir}/build")
   end
 end
 
 execute "add-virtualenv-bash_aliases" do
-  user "vagrant"
-  virtualenv_str = "cd #{python_dir} && source virtualenv.sh && cd /home/vagrant"
-  command "echo \"#{virtualenv_str}\" >> /home/vagrant/.bash_aliases"
-  not_if "grep virtualenv.sh /home/vagrant/.bash_aliases"
+  user node[:settings][:user]
+  virtualenv_str = "cd #{python_dir} && source virtualenv.sh && cd /home/#{node[:settings][:user]}"
+  command "echo \"#{virtualenv_str}\" >> /home/#{node[:settings][:user]}/.bash_aliases"
+  not_if "grep virtualenv.sh /home/#{node[:settings][:user]}/.bash_aliases"
 end

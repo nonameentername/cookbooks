@@ -4,11 +4,11 @@
   end
 end
 
-src_dir = "/home/vagrant/source"
+src_dir = node[:settings][:src_dir]
 
 script "setup-android-sdk" do
   interpreter "bash"
-  user "vagrant"
+  user node[:settings][:user]
   cwd "/tmp"
   code "
     wget http://dl.google.com/android/android-sdk_r16-linux.tgz
@@ -23,10 +23,10 @@ script "setup-android-sdk" do
 end
 
 execute "add-platform-tools-bash_aliases" do
-  user "vagrant"
+  user node[:settings][:user]
   path = "#{src_dir}/android-sdk/tools:#{src_dir}/android-sdk/platform-tools"
-  command "echo \"export PATH=#{path}:\\$PATH\" >> /home/vagrant/.bash_aliases"
-  not_if "grep platform-tools /home/vagrant/.bash_aliases"
+  command "echo \"export PATH=#{path}:\\$PATH\" >> /home/#{node[:settings][:user]}/.bash_aliases"
+  not_if "grep platform-tools /home/#{node[:settings][:user]}/.bash_aliases"
 end
 
 =begin
